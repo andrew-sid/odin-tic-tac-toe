@@ -1,0 +1,25 @@
+body {
+  text-align: center;
+  font-family: sans-serif;
+}
+
+.game {
+  text-align: center;
+}
+
+.game__player-turn {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.game__cells {
+  display: grid;
+  grid-template: 100px 100px 100px / 100px 100px 100px;
+  justify-content: center;
+}
+
+.game__cell {
+  background-color: white;
+  border: 3px solid black;
+  font-size: 5rem;
+}
