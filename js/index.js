@@ -14,6 +14,7 @@ function Gameboard() {
     if (board[index].getValue() !== null) return;
 
     board[index].addToken(player);
+    return true;
   };
 
   return { getBoard, choiceCell };
@@ -57,8 +58,10 @@ function GameController(playerOneName = 'Player One', playerTwoName = 'Player Tw
 
   const playRound = (index) => {
     if (calculateWinner(board.getBoard())) return;
-    board.choiceCell(index, getActivePlayer().token);
-    switchPlayerTurn();
+    if (board.choiceCell(index, getActivePlayer().token)) {
+      switchPlayerTurn();
+    };
+    
   };
 
   const calculateWinner = (board) => {
