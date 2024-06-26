@@ -12,7 +12,7 @@ function GameBoard() {
     }
   };
 
-  return { getBoard, makeMove };
+  return { getBoard, makeMove};
 }
 
 function GameController(player1 = 'Player 1', player2 = 'Player 2') {
@@ -62,7 +62,6 @@ function GameController(player1 = 'Player 1', player2 = 'Player 2') {
 
   const playRound = (index) => {
     if (!winner) {
-
       if (board.makeMove(index, getActivePlayer().token)) {
         winner = calculateWinner(board.getBoard());
         isDraw = calculateDraw(board.getBoard());
@@ -79,7 +78,13 @@ function GameController(player1 = 'Player 1', player2 = 'Player 2') {
 }
 
 (function ScreenContoller() {
-  const game = GameController();
+  const playerOneNameInput = document.querySelector('.game__player-one-name');
+  const playerTwoNameInput = document.querySelector('.game__player-two-name');
+
+  const getPlayerOneName = () => playerOneNameInput.value;
+  const getPlayerTwoName = () => playerTwoNameInput.value;
+
+  let game = GameController(getPlayerOneName() || 'Player 1', getPlayerTwoName() || 'Player 2');
   const gameDiv = document.querySelector('.game__cells');
   const turnText = document.querySelector('.game__turn-title');
 
@@ -94,7 +99,7 @@ function GameController(player1 = 'Player 1', player2 = 'Player 2') {
     } else if (isDraw) {
       turnText.textContent = `IT'S A DRAW!`;
     } else {
-      turnText.textContent = `${game.getActivePlayer().name} turn!`;
+      turnText.textContent = `${game.getActivePlayer().name}'s turn!`;
     }
 
     board.forEach((cell, index) => {
@@ -115,6 +120,14 @@ function GameController(player1 = 'Player 1', player2 = 'Player 2') {
 
   gameDiv.addEventListener('click', clickHandler);
 
-  // initial render
-  renderGame();
+  // start-restart functional start new game with empty board
+  const startRestartBtn = document.querySelector('.game__start-restart-btn');
+
+  const startRestartHandler = () => {
+    game = GameController(getPlayerOneName() || 'Player 1', getPlayerTwoName() || 'Player 2');
+    startRestartBtn.textContent = 'Restart';
+    renderGame();
+  };
+
+  startRestartBtn.addEventListener('click', startRestartHandler);
 })();

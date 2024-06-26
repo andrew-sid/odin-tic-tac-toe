@@ -1,16 +1,75 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   text-align: center;
   font-family: sans-serif;
   background-color: rgb(167, 152, 132);
+  font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+li {
+  list-style: none;
+}
+
+.title {
+  margin-bottom: 20px;  
 }
 
 .game {
   text-align: center;
 }
 
+.game__inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 50px;
+}
+
+.game__inputs li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.game__inputs li label {
+  font-size: 1.5rem;
+}
+
+.game__inputs li input {
+  height: 30px;
+  width: 400px;
+  padding: 0 5px;
+  font-size: 1.2rem;
+}
+
+.game__inputs li input:focus {
+  outline: none;
+}
+
+.game__start-restart-btn {
+  padding: 15px 30px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 30px;
+  border: 5px solid black;
+  cursor: pointer;
+  transition: transform 0.1s ease-in;
+}
+
+.game__start-restart-btn:active {
+  transform: scale(0.9);
+}
+
 .game__turn-title {
   font-size: 1.5rem;
   font-weight: 500;
+  margin-bottom: 20px;
 }
 
 .game__cells {
