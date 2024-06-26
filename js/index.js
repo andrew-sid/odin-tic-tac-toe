@@ -1,70 +1,40 @@
-function Gameboard() {
-  const board = [];
-
-  for (let i = 0; i < 9; i++) {
-    board.push(Cell());
-  }
+function GameBoard() {
+  const board = Array(9).fill(null);
 
   const getBoard = () => board;
 
-  const choiceCell = (index, player) => {
-    const availableCells = board.filter((cell) => cell.getValue() === null).map((cell) => cell);
+  const printBoard = () => console.log(getBoard());
 
-    if (!availableCells.length) return;
-    if (board[index].getValue() !== null) return;
-
-    board[index].addToken(player);
-    return true;
+  const makeMove = (index, value) => {
+    if (board[index] !== null) {
+      return false;
+    } else {
+      board[index] = value;
+      return true;
+    }
   };
 
-  return { getBoard, choiceCell };
+  return { getBoard, printBoard, makeMove };
 }
 
-function Cell() {
-  let value = null;
-
-  const addToken = (player) => {
-    value = player;
-  };
-
-  const getValue = () => value;
-
-  return {
-    addToken,
-    getValue,
-  };
-}
-
-function GameController(playerOneName = 'Player One', playerTwoName = 'Player Two') {
-  const board = Gameboard();
+function GameController(player1 = 'Player 1', player2 = 'Player 2') {
+  const board = GameBoard();
+  let winner;
 
   const players = [
-    {
-      name: playerOneName,
-      token: 'X',
-    },
-    {
-      name: playerTwoName,
-      token: 'O',
-    },
+    { name: player1, token: 'X' },
+    { name: player2, token: 'O' },
   ];
 
   let activePlayer = players[0];
 
-  const switchPlayerTurn = () => {
+  const changeActivePlayer = () => {
     activePlayer = activePlayer === players[0] ? players[1] : players[0];
   };
+
   const getActivePlayer = () => activePlayer;
 
-  const playRound = (index) => {
-    if (calculateWinner(board.getBoard())) return;
-    if (board.choiceCell(index, getActivePlayer().token)) {
-      switchPlayerTurn();
-    };
-    
-  };
-
-  const calculateWinner = (board) => {
+  function calculateWinner(squares) {
     const lines = [
       [0, 1, 2],
       [3, 4, 5],
@@ -77,64 +47,65 @@ function GameController(playerOneName = 'Player One', playerTwoName = 'Player Tw
     ];
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
-      if (
-        board[a].getValue() &&
-        board[a].getValue() === board[b].getValue() &&
-        board[a].getValue() === board[c].getValue()
-      ) {
-        return board[a].getValue();
+      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+        return squares[a];
       }
     }
     return null;
-  };
+  }
 
-  return {
-    playRound,
-    getActivePlayer,
-    getBoard: board.getBoard,
-    calculateWinner
+  const getWinner = () => winner;
+
+  const playRound = (index) => {
+    if (!winner) {
+      if (board.makeMove(index, getActivePlayer().token)) {
+        winner = calculateWinner(board.getBoard());
+        if (!winner) {
+          changeActivePlayer();
+        }
+        board.printBoard();
+      }
+    }
   };
+  board.printBoard();
+
+  return { playRound, getBoard: board.getBoard, getActivePlayer, getWinner };
 }
 
-function ScreenController() {
+(function ScreenContoller() {
   const game = GameController();
-  const playerTurnText = document.querySelector('.game__player-turn');
   const gameDiv = document.querySelector('.game__cells');
+  const turnText = document.querySelector('.game__turn-title');
 
-  const updateScreen = () => {
+  const renderGame = () => {
     gameDiv.innerHTML = '';
-
     const board = game.getBoard();
-    const activePlayer = game.getActivePlayer();
+    const winner = game.getWinner();
 
-    const winner = game.calculateWinner(board);
     if (winner) {
-      playerTurnText.textContent = `The winner is: ${winner}`;
+      turnText.textContent = `${game.getActivePlayer().name} is WIN!`;
     } else {
-      playerTurnText.textContent = `${activePlayer.name}\`s turn... `;
+      turnText.textContent = `${game.getActivePlayer().name} turn!`;
     }
     
-
     board.forEach((cell, index) => {
-      const cellButton = document.createElement('button');
-      cellButton.classList.add('game__cell');
-      cellButton.dataset.index = index;
-      cellButton.textContent = cell.getValue();
-      gameDiv.appendChild(cellButton);
+      const cellBtn = document.createElement('button');
+      cellBtn.classList.add('game__cell');
+      cellBtn.textContent = cell;
+      cellBtn.dataset.index = index;
+      gameDiv.appendChild(cellBtn);
     });
   };
 
-  function clickHandlerBoard(e) {
-    const selectedIndex = e.target.dataset.index;
-    if (!selectedIndex) return;
-
-    game.playRound(selectedIndex);
-    updateScreen();
+  function clickHandler(event) {
+    const currentIndex = event.target.dataset.index;
+    if (!currentIndex) return;
+    game.playRound(currentIndex);
+    renderGame();
   }
 
-  gameDiv.addEventListener('click', clickHandlerBoard);
+  gameDiv.addEventListener('click', clickHandler);
 
-  updateScreen();
-}
-
-ScreenController();
+  // initial render
+  renderGame();
+})();

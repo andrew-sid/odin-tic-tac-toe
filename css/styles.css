@@ -1,13 +1,14 @@
 body {
   text-align: center;
   font-family: sans-serif;
+  background-color: rgb(167, 152, 132);
 }
 
 .game {
   text-align: center;
 }
 
-.game__player-turn {
+.game__turn-title {
   font-size: 1.5rem;
   font-weight: 500;
 }
